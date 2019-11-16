@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const Telegraf = require("telegraf");
 const TelegrafInlineMenu = require("telegraf-inline-menu");
-const { getAirtmRates } = require("./scrapping");
+const { getAirtmRates, getDolarToday } = require("./data");
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const menu = new TelegrafInlineMenu(
@@ -14,17 +14,33 @@ menu.setCommand("start");
 menu.simpleButton("AirTM", "a", {
     doFunc: async ctx => {
         const data = await getAirtmRates();
-        return ctx.replyWithHTML(`
-            <b>AirTM</b>
-            General: Bs. ${data.general}
-            Compra: Bs. ${data.buy}
-            Venta: Bs. ${data.sell}
-        `);
+        let message = "<b>AirTM</b> \n";
+        message += `General: Bs. ${data.general} \n`;
+        message += `Compra: Bs. ${data.buy} \n`;
+        message += `Venta: Bs. ${data.sell}`;
+
+        return ctx.replyWithHTML(message);
     }
 });
 
 menu.simpleButton("DolarToday", "b", {
-    doFunc: async ctx => ctx.reply("https://dolartoday.com/")
+    doFunc: async ctx => {
+        const data = await getDolarToday();
+        let message = "<b>Dolartoday</b> \n";
+        message += "<b>USD</b> \n";
+
+        for (let key in data.USD) {
+            message += `${key}: Bs. ${data.USD[key]} \n`;
+        }
+
+        message += "<b>EUR</b> \n";
+
+        for (let key in data.EUR) {
+            message += `${key}: Bs. ${data.EUR[key]} \n`;
+        }
+
+        return ctx.replyWithHTML(message);
+    }
 });
 
 bot.catch((err, ctx) => {

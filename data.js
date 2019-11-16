@@ -2,7 +2,7 @@ const axios = require("axios");
 const $ = require("cheerio");
 
 const airtmUrl = "https://rates.airtm.com";
-const dolarToday = "https://dolartoday.com/";
+const dolarToday = "https://s3.amazonaws.com/dolartoday/data.json";
 
 const getAirtmRates = _ =>
     new Promise(resolve => {
@@ -24,19 +24,25 @@ const getAirtmRates = _ =>
 const getDolarToday = _ =>
     new Promise(resolve => {
         axios.get(dolarToday).then(res => {
-            let imgs = $("img", res.data);
-            for (let img in imgs) {
-                if (typeof imgs[img].attribs === "object") {
-                    if (
-                        imgs[img].attribs.alt === "Dolar paralelo en Venezuela"
-                    ) {
-                        resolve(imgs[img].attribs.src);
-                    }
-                }
+            let usd = res.data.USD;
+            let eur = res.data.EUR;
+            let newUsd = {},
+                newEur = {};
+            for (let key in usd) {
+                let newKey = key.replace("_", " ");
+                newKey = newKey.charAt(0).toUpperCase() + newKey.slice(1);
+                newUsd[newKey] = usd[key];
             }
+
+            for (let key in eur) {
+                let newKey = key.replace("_", " ");
+                newKey = newKey.charAt(0).toUpperCase() + newKey.slice(1);
+                newEur[newKey] = eur[key];
+            }
+
+            resolve({ USD: newUsd, EUR: newEur });
         });
     });
-
 module.exports = {
     getAirtmRates,
     getDolarToday
