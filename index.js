@@ -6,6 +6,11 @@ const { getAirtmRates, getDolarToday } = require("./data");
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const menu = new TelegrafInlineMenu(ctx => {
+    console.log(
+        `${new Date()} - ${ctx.from.first_name} @${
+            ctx.from.username
+        }, lo ha usado`
+    );
     bot.telegram.sendMessage(
         process.env.CHAT_ID,
         `${ctx.from.first_name} @${ctx.from.username}, lo ha usado`
