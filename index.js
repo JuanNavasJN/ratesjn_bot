@@ -5,9 +5,13 @@ const TelegrafInlineMenu = require("telegraf-inline-menu");
 const { getAirtmRates, getDolarToday } = require("./data");
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const menu = new TelegrafInlineMenu(
-    ctx => `Hola ${ctx.from.first_name}! Elige una opción:`
-);
+const menu = new TelegrafInlineMenu(ctx => {
+    bot.telegram.sendMessage(
+        process.env.CHAT_ID,
+        `${ctx.from.first_name} @${ctx.from.username}, lo ha usado`
+    );
+    return `Hola ${ctx.from.first_name}! Elige una opción:`;
+});
 menu.setCommand("rates");
 menu.setCommand("start");
 
