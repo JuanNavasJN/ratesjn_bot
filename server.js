@@ -32,6 +32,6 @@ app.get("/airtm/buy", async (req, res) => {
     res.json(data.buy);
 });
 
-app.listen(process.env.PORT, function() {
+app.listen(process.env.PORT, "0.0.0.0", function() {
     console.log("Web Server listening on port " + process.env.PORT);
 });
