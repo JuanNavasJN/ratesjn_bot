@@ -71,3 +71,5 @@ bot.use(menu.init());
 bot.launch();
 
 console.log(`Running... ${new Date()}`);
+
+require("./server");
