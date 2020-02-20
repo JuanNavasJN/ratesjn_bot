@@ -1,8 +1,8 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const Telegraf = require("telegraf");
-const TelegrafInlineMenu = require("telegraf-inline-menu");
-const { getAirtmRates, getDolarToday } = require("./data");
+const Telegraf = require('telegraf');
+const TelegrafInlineMenu = require('telegraf-inline-menu');
+const { getAirtmRates, getDolarToday, getMonitor } = require('./data');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const menu = new TelegrafInlineMenu(ctx => {
@@ -17,13 +17,13 @@ const menu = new TelegrafInlineMenu(ctx => {
     );
     return `Hola ${ctx.from.first_name}! Elige una opción:`;
 });
-menu.setCommand("rates");
-menu.setCommand("start");
+menu.setCommand('rates');
+menu.setCommand('start');
 
-menu.simpleButton("AirTM", "a", {
+menu.simpleButton('AirTM', 'a', {
     doFunc: async ctx => {
         const data = await getAirtmRates();
-        let message = "<b>AirTM</b> \n";
+        let message = '<b>AirTM</b> \n';
         message += `General: Bs. ${data.general} \n`;
         message += `Compra: Bs. ${data.buy} \n`;
         message += `Venta: Bs. ${data.sell}`;
@@ -32,23 +32,33 @@ menu.simpleButton("AirTM", "a", {
     }
 });
 
-menu.simpleButton("DolarToday", "b", {
+menu.simpleButton('DolarToday', 'b', {
     doFunc: async ctx => {
         const data = await getDolarToday();
-        let message = "<b>Dolartoday</b> \n";
-        message += "<b>USD</b> \n";
+        let message = '<b>Dolartoday</b> \n';
+        message += '<b>USD</b> \n';
 
         for (let key in data.USD) {
             message += `${key}: Bs. ${data.USD[key]} \n`;
         }
 
-        message += "<b>EUR</b> \n";
+        message += '<b>EUR</b> \n';
 
         for (let key in data.EUR) {
             message += `${key}: Bs. ${data.EUR[key]} \n`;
         }
 
         return ctx.replyWithHTML(message);
+    }
+});
+
+menu.simpleButton('@MonitorDolarVzla', 'm', {
+    doFunc: async ctx => {
+        let data = await getMonitor();
+
+        ctx.replyWithPhoto(data[0]);
+        ctx.replyWithPhoto(data[1]);
+        return ctx.replyWithPhoto(data[2]);
     }
 });
 
@@ -72,4 +82,4 @@ bot.launch();
 
 console.log(`Running... ${new Date()}`);
 
-require("./server");
+require('./server');
