@@ -6,6 +6,16 @@ const Twitter = require('twitter');
 const airtmUrl = 'https://rates.airtm.com';
 const dolarToday = 'https://s3.amazonaws.com/dolartoday/data.json';
 
+// OCR
+const ocrSpaceApi = require('ocr-space-api');
+
+const options = {
+    apikey: process.env.OCR_APIKEY,
+    language: 'spa',
+    imageFormat: 'image/jpg',
+    isOverlayRequired: true
+};
+
 const getAirtmRates = _ =>
     new Promise(resolve => {
         axios.get(airtmUrl).then(res => {
@@ -56,24 +66,58 @@ const getMonitor = _ =>
         });
 
         const params = { screen_name: 'monitordolarvzl' };
-        client.get('statuses/user_timeline', params, function(
+        client.get('statuses/user_timeline', params, async function(
             error,
             tweets,
             response
         ) {
             if (!error) {
-                let data = tweets.map(e => {
-                    if (
-                        !e.retweeted_status &&
-                        e.entities.media &&
-                        e.entities.media.length === 1
-                    ) {
-                        return e.entities.media[0].media_url_https;
+                let res = null;
+                for (let i = 0; i < tweets.length; i++) {
+                    let e = tweets[i];
+                    if (!e.retweeted_status) {
+                        let match = e.text.match(/[0-9]+\.[0-9]+\,[0-9]+/g);
+                        if (match) {
+                            res = {
+                                img: false,
+                                data: e.text
+                            };
+                            break;
+                        }
                     }
-                    return null;
-                });
-
-                resolve(data.slice(0, 3));
+                }
+                if (!res) {
+                    for (let i = 0; i < tweets.length; i++) {
+                        let e = tweets[i];
+                        if (
+                            !e.retweeted_status &&
+                            e.entities.media &&
+                            e.entities.media.length === 1 &&
+                            e.entities.media[0].media_url_https
+                        ) {
+                            let url = e.entities.media[0].media_url_https;
+                            try {
+                                const data = await ocrSpaceApi.parseImageFromUrl(
+                                    url,
+                                    options
+                                );
+                                let match = data.parsedText.match(
+                                    /PROMEDIO Bs.S/gm
+                                );
+                                if (match) {
+                                    res = {
+                                        img: true,
+                                        data: url
+                                    };
+                                    break;
+                                }
+                            } catch (e) {
+                                console.log(e);
+                            }
+                        }
+                    }
+                }
+                resolve(res);
             }
         });
     });

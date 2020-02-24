@@ -54,11 +54,17 @@ menu.simpleButton('DolarToday', 'b', {
 
 menu.simpleButton('@MonitorDolarVzla', 'm', {
     doFunc: async ctx => {
-        let data = await getMonitor();
+        let res = await getMonitor();
 
-        ctx.replyWithPhoto(data[0]);
-        ctx.replyWithPhoto(data[1]);
-        return ctx.replyWithPhoto(data[2]);
+        if (res.img) {
+            let message = '<b>@MonitorDolarVzl</b>';
+            ctx.replyWithHTML(message);
+            return ctx.replyWithPhoto(res.data);
+        } else {
+            let message = '<b>@MonitorDolarVzl</b> \n';
+            message += res.data;
+            return ctx.replyWithHTML(message);
+        }
     }
 });
 
