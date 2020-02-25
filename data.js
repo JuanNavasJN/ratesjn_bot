@@ -76,21 +76,17 @@ const getMonitor = _ =>
                 for (let i = 0; i < tweets.length; i++) {
                     let e = tweets[i];
                     if (!e.retweeted_status) {
-                        let match = e.text.match(/[0-9]+\.[0-9]+\,[0-9]+/g);
+                        let match = e.text.match(/[0-9]+.[0-9]+[,|.]+[0-9]+/g);
                         if (match) {
                             res = {
                                 img: false,
-                                data: e.text
+                                data: e.text,
+                                value: match[0]
                             };
                             break;
                         }
-                    }
-                }
-                if (!res) {
-                    for (let i = 0; i < tweets.length; i++) {
-                        let e = tweets[i];
+
                         if (
-                            !e.retweeted_status &&
                             e.entities.media &&
                             e.entities.media.length === 1 &&
                             e.entities.media[0].media_url_https
@@ -104,10 +100,16 @@ const getMonitor = _ =>
                                 let match = data.parsedText.match(
                                     /PROMEDIO Bs.S/gm
                                 );
+
                                 if (match) {
+                                    let match2 = data.parsedText.match(
+                                        /[0-9]+.[0-9]+[,|.]+[0-9]+/g
+                                    );
+
                                     res = {
                                         img: true,
-                                        data: url
+                                        data: url,
+                                        value: match2[0]
                                     };
                                     break;
                                 }
@@ -117,6 +119,7 @@ const getMonitor = _ =>
                         }
                     }
                 }
+
                 resolve(res);
             }
         });
