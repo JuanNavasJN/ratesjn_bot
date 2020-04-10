@@ -13,7 +13,7 @@ const options = {
     apikey: process.env.OCR_APIKEY,
     language: 'spa',
     imageFormat: 'image/jpg',
-    isOverlayRequired: true
+    isOverlayRequired: true,
 };
 
 const getAirtmRates = _ =>
@@ -26,7 +26,7 @@ const getAirtmRates = _ =>
             const data = {
                 buy,
                 general,
-                sell
+                sell,
             };
 
             resolve(data);
@@ -62,11 +62,11 @@ const getMonitor = _ =>
             consumer_key: process.env.CONSUMER_KEY,
             consumer_secret: process.env.CONSUMER_SECRET,
             access_token_key: process.env.ACCESS_TOKEN_KEY,
-            access_token_secret: process.env.ACCESS_TOKEN_SECRET
+            access_token_secret: process.env.ACCESS_TOKEN_SECRET,
         });
 
         const params = { screen_name: 'monitordolarvzl' };
-        client.get('statuses/user_timeline', params, async function(
+        client.get('statuses/user_timeline', params, async function (
             error,
             tweets,
             response
@@ -77,11 +77,14 @@ const getMonitor = _ =>
                     let e = tweets[i];
                     if (!e.retweeted_status) {
                         let match = e.text.match(/[0-9]+.[0-9]+[,|.]+[0-9]+/g);
-                        if (match) {
+                        let match2 = e.text.match(
+                            /[0-9]+.[0-9]+.[0-9]+[,|.]+[0-9]+/g
+                        );
+                        if (match || match2) {
                             res = {
                                 img: false,
                                 data: e.text,
-                                value: match[0]
+                                value: match[0],
                             };
                             break;
                         }
@@ -98,7 +101,7 @@ const getMonitor = _ =>
                                     options
                                 );
                                 let match = data.parsedText.match(
-                                    /PROMEDIO Bs.S/gm
+                                    /PROMEDIO Bs./gm
                                 );
 
                                 if (match) {
@@ -109,7 +112,7 @@ const getMonitor = _ =>
                                     res = {
                                         img: true,
                                         data: url,
-                                        value: match2[0]
+                                        value: match2[0],
                                     };
                                     break;
                                 }
@@ -128,5 +131,5 @@ const getMonitor = _ =>
 module.exports = {
     getAirtmRates,
     getDolarToday,
-    getMonitor
+    getMonitor,
 };
