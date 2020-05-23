@@ -29,7 +29,7 @@ menu.simpleButton('AirTM', 'a', {
         message += `Venta: Bs. ${data.sell}`;
 
         return ctx.replyWithHTML(message);
-    }
+    },
 });
 
 menu.simpleButton('DolarToday', 'b', {
@@ -49,24 +49,24 @@ menu.simpleButton('DolarToday', 'b', {
         }
 
         return ctx.replyWithHTML(message);
-    }
+    },
 });
 
-menu.simpleButton('@MonitorDolarVzla', 'm', {
-    doFunc: async ctx => {
-        let res = await getMonitor();
+// menu.simpleButton('@MonitorDolarVzla', 'm', {
+//     doFunc: async ctx => {
+//         let res = await getMonitor();
 
-        if (res.img) {
-            let message = '<b>@MonitorDolarVzl</b>';
-            ctx.replyWithHTML(message);
-            return ctx.replyWithPhoto(res.data);
-        } else {
-            let message = '<b>@MonitorDolarVzl</b> \n';
-            message += res.data;
-            return ctx.replyWithHTML(message);
-        }
-    }
-});
+//         if (res.img) {
+//             let message = '<b>@MonitorDolarVzl</b>';
+//             ctx.replyWithHTML(message);
+//             return ctx.replyWithPhoto(res.data);
+//         } else {
+//             let message = '<b>@MonitorDolarVzl</b> \n';
+//             message += res.data;
+//             return ctx.replyWithHTML(message);
+//         }
+//     }
+// });
 
 bot.catch((err, ctx) => {
     console.log(`Ooops, ecountered an error for ${ctx.updateType}`, err);
