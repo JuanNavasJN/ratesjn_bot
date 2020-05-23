@@ -88,4 +88,4 @@ bot.launch();
 
 console.log(`Running... ${new Date()}`);
 
-require('./server');
+// require('./server');
