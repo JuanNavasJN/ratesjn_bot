@@ -52,21 +52,15 @@ menu.simpleButton('DolarToday', 'b', {
     },
 });
 
-// menu.simpleButton('@MonitorDolarVzla', 'm', {
-//     doFunc: async ctx => {
-//         let res = await getMonitor();
+menu.simpleButton('@MonitorDolarVzla', 'm', {
+    doFunc: async ctx => {
+        let res = await getMonitor();
 
-//         if (res.img) {
-//             let message = '<b>@MonitorDolarVzl</b>';
-//             ctx.replyWithHTML(message);
-//             return ctx.replyWithPhoto(res.data);
-//         } else {
-//             let message = '<b>@MonitorDolarVzl</b> \n';
-//             message += res.data;
-//             return ctx.replyWithHTML(message);
-//         }
-//     }
-// });
+        let message = '<b>@EnParaleloVzla</b>';
+        ctx.replyWithHTML(message);
+        return ctx.replyWithPhoto(res.src);
+    },
+});
 
 bot.catch((err, ctx) => {
     console.log(`Ooops, ecountered an error for ${ctx.updateType}`, err);
