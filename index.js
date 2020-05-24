@@ -55,6 +55,7 @@ menu.simpleButton('DolarToday', 'b', {
 menu.simpleButton('@EnParaleloVzla', 'm', {
     doFunc: async ctx => {
         let res = await getMonitor();
+        res = res.data;
 
         let message = '<b>@EnParaleloVzla</b>';
         ctx.replyWithHTML(message);
