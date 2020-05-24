@@ -52,7 +52,7 @@ menu.simpleButton('DolarToday', 'b', {
     },
 });
 
-menu.simpleButton('@MonitorDolarVzla', 'm', {
+menu.simpleButton('@EnParaleloVzla', 'm', {
     doFunc: async ctx => {
         let res = await getMonitor();
 
