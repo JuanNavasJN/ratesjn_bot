@@ -1,8 +1,8 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const Telegraf = require('telegraf');
-const TelegrafInlineMenu = require('telegraf-inline-menu');
-const { getAirtmRates, getDolarToday, getMonitor } = require('./data');
+const Telegraf = require("telegraf");
+const TelegrafInlineMenu = require("telegraf-inline-menu");
+const { getAirtmRates, getDolarToday, getBCV } = require("./data");
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const menu = new TelegrafInlineMenu(ctx => {
@@ -17,13 +17,13 @@ const menu = new TelegrafInlineMenu(ctx => {
     );
     return `Hola ${ctx.from.first_name}! Elige una opción:`;
 });
-menu.setCommand('rates');
-menu.setCommand('start');
+menu.setCommand("rates");
+menu.setCommand("start");
 
-menu.simpleButton('AirTM', 'a', {
+menu.simpleButton("AirTM", "a", {
     doFunc: async ctx => {
         const data = await getAirtmRates();
-        let message = '<b>AirTM</b> \n';
+        let message = "<b>AirTM</b> \n";
         message += `General: Bs. ${data.general} \n`;
         message += `Compra: Bs. ${data.buy} \n`;
         message += `Venta: Bs. ${data.sell}`;
@@ -32,17 +32,17 @@ menu.simpleButton('AirTM', 'a', {
     },
 });
 
-menu.simpleButton('DolarToday', 'b', {
+menu.simpleButton("DolarToday", "b", {
     doFunc: async ctx => {
         const data = await getDolarToday();
-        let message = '<b>Dolartoday</b> \n';
-        message += '<b>USD</b> \n';
+        let message = "<b>Dolartoday</b> \n";
+        message += "<b>USD</b> \n";
 
         for (let key in data.USD) {
             message += `${key}: Bs. ${data.USD[key]} \n`;
         }
 
-        message += '<b>EUR</b> \n';
+        message += "<b>EUR</b> \n";
 
         for (let key in data.EUR) {
             message += `${key}: Bs. ${data.EUR[key]} \n`;
@@ -52,14 +52,13 @@ menu.simpleButton('DolarToday', 'b', {
     },
 });
 
-menu.simpleButton('@EnParaleloVzla', 'm', {
+menu.simpleButton("BCV", "m", {
     doFunc: async ctx => {
-        let res = await getMonitor();
+        let res = await getBCV();
         res = res.data;
 
-        let message = '<b>@EnParaleloVzla</b>';
-        ctx.replyWithHTML(message);
-        return ctx.replyWithPhoto(res.src);
+        let message = "<b>Tasa $ BCV</b> \n" + res.value;
+        return ctx.replyWithHTML(message);
     },
 });
 
@@ -82,5 +81,3 @@ bot.use(menu.init());
 bot.launch();
 
 console.log(`Running... ${new Date()}`);
-
-// require('./server');
