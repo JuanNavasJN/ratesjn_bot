@@ -57,7 +57,7 @@ menu.simpleButton("BCV", "m", {
         let res = await getBCV();
         res = res.data;
 
-        let message = "<b>Tasa $ BCV</b> \n" + res.value;
+        let message = "<b>Tasa $ BCV</b> \nBs. " + res.value;
         return ctx.replyWithHTML(message);
     },
 });
